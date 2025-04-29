@@ -1,4 +1,4 @@
-# TSX Component Renderer
+# React TSX Component Renderer
 
 ## Overview
 
