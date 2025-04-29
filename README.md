@@ -86,8 +86,4 @@ The TSX Component Renderer uses:
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-## Contact
-
-Your Name - your.email@example.com
-
 Project Link: https://github.com/JoshuaFourie/TSX-Viewer 
