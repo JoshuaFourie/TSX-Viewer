@@ -4,8 +4,6 @@
 
 TSX Component Renderer is a powerful desktop application that helps developers preview, analyze, and export React TypeScript (TSX) components with ease. Built with Python and Tkinter, this tool provides a comprehensive environment for working with React components.
 
-![TSX Component Renderer Screenshot](screenshot.png)
-
 ## Features
 
 - 🔍 Render and preview TSX components
@@ -17,24 +15,44 @@ TSX Component Renderer is a powerful desktop application that helps developers p
 
 ## Prerequisites
 
-- Python 3.8+
-- Node.js and npm
-- tkinter (usually comes pre-installed with Python)
+- Python 3.8+ with tkinter
+  - Windows/macOS: Usually pre-installed
+  - Linux: May need to install via package manager
+    - Ubuntu/Debian: `sudo apt-get install python3-tk`
+    - Fedora: `sudo dnf install python3-tkinter`
+    - Arch: `sudo pacman -S tk`
+- Node.js 16+ and npm
+  - Download from: https://nodejs.org/
 
 ## Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/tsx-component-renderer.git
+git clone https://github.com/JoshuaFourie/TSX-Viewer.git
 cd tsx-component-renderer
 ```
 
-2. Install Python dependencies:
+2. (Optional) Create and activate a virtual environment:
 ```bash
-pip install -r requirements.txt
+python3 -m venv venv
+source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 ```
 
-3. Ensure Node.js and npm are installed
+3. Verify Node.js and npm:
+```bash
+node --version
+npm --version
+```
+
+4. Run the application:
+```bash
+python tsx_renderer.py
+```
+
+### Troubleshooting
+
+- If you encounter tkinter-related issues, ensure you've installed the tk package for your Python distribution
+- For Node.js, make sure it's in your system PATH
 
 ## Usage
 
@@ -68,4 +86,8 @@ The TSX Component Renderer uses:
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-Project Link: [https://github.com/yourusername/tsx-component-renderer](https://github.com/yourusername/tsx-component-renderer)
+## Contact
+
+Your Name - your.email@example.com
+
+Project Link: https://github.com/JoshuaFourie/TSX-Viewer 
