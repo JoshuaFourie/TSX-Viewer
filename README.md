@@ -1,89 +1,114 @@
-# TSX Component Renderer
+TSX Component Manager
+A powerful desktop application for managing, editing, and exporting React TSX/JSX components. Create, modify, and export components as complete React applications, Next.js apps, or reusable component libraries.
+Features
+Component Management
 
-## Overview
+Multi-Component Projects - Add, edit, and organize multiple components
+Project Saving - Save and load your component projects for continued work
+Component Operations - Rename, duplicate, and remove components with ease
 
-TSX Component Renderer is a powerful desktop application that helps developers preview, analyze, and export React TypeScript (TSX) components with ease. Built with Python and Tkinter, this tool provides a comprehensive environment for working with React components.
+Advanced Code Editing
 
-## Features
+Syntax Highlighting - Full React/TSX syntax highlighting
+Search & Replace - Powerful text search and replace functionality
+Auto-formatting - Format your code with a single click
+Auto-completion - Brackets and quote auto-closing
+Line Numbers - Visual line reference for easier editing
 
-- 🔍 Render and preview TSX components
-- 📋 Code view with syntax highlighting
-- 🌐 Integrated webpack development server
-- 🚀 One-click export to a full React application
-- 🧩 Automatic dependency detection
-- 💻 Cross-platform support (Windows, macOS, Linux)
+Powerful Export Options
 
-## Prerequisites
+React Application - Export as complete, ready-to-run React apps
+Next.js Application - Export to Next.js with App Router or Pages Router
+Component Library - Package components as reusable NPM libraries
+Storybook Integration - Optional Storybook setup for component documentation
 
-- Python 3.8+ with tkinter
-  - Windows/macOS: Usually pre-installed
-  - Linux: May need to install via package manager
-    - Ubuntu/Debian: `sudo apt-get install python3-tk`
-    - Fedora: `sudo dnf install python3-tkinter`
-    - Arch: `sudo pacman -S tk`
-- Node.js 16+ and npm
-  - Download from: https://nodejs.org/
+Installation
+Prerequisites
 
-## Installation
+Python 3.8+ with tkinter
+Node.js 16+ and npm
 
-1. Clone the repository:
-```bash
+Setup
+bash# Clone the repository
 git clone https://github.com/JoshuaFourie/TSX-Viewer.git
-cd tsx-component-renderer
-```
+cd TSX-Viewer
 
-2. (Optional) Create and activate a virtual environment:
-```bash
-python3 -m venv venv
-source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-```
+# Optional: Create and activate a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
 
-3. Verify Node.js and npm:
-```bash
-node --version
-npm --version
-```
+# Run the application
+python main.py
+Usage
+Adding Components
 
-4. Run the application:
-```bash
-python tsx_renderer.py
-```
+Click the "Add Component" button in the header
+Select one or more TSX/JSX files
+Components appear in the component list panel
 
-### Troubleshooting
+Editing Components
 
-- If you encounter tkinter-related issues, ensure you've installed the tk package for your Python distribution
-- For Node.js, make sure it's in your system PATH
+Select a component from the list
+Use the enhanced code editor with syntax highlighting
+Save changes with the "Save" button or Ctrl+S
 
-## Usage
+Managing Projects
 
-Run the application:
-```bash
-python tsx_renderer.py
-```
+Save Project: File > Save Project
+Open Project: File > Open Project
+Recent Projects: Access recently opened projects from the File menu
 
-### Key Functions
+Export Options
+React Application
+Export your components as a complete, functioning React application:
 
-- **Select TSX File**: Open and preview your React TypeScript components
-- **Open in Browser**: View your component in a live webpack development server
-- **Export to React App**: Generate a complete, standalone React application with your components
+Automatic dependency detection
+Tailwind CSS integration
+Component gallery with selector
+Option to run immediately after export
 
-## How It Works
+Next.js Application
+Package your components as a Next.js application:
 
-The TSX Component Renderer uses:
-- Tkinter for the desktop application UI
-- Webpack for development server and compilation
-- Python subprocess to manage npm and webpack processes
+Choose between App Router and Pages Router
+TypeScript or JavaScript
+Automatic page creation for each component
+Navigation between components
 
-## Contributing
+Component Library
+Create a publishable component library:
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Rollup or Webpack bundling
+TypeScript definitions
+Storybook documentation
+Ready for NPM publishing
 
-## License
+Development
+The application is structured into modules for better maintainability:
+tsx_component_manager/
+├── __init__.py
+├── main.py               # Main entry point
+├── ui/                   # User interface modules
+│   ├── main_window.py    # Main application window
+│   ├── component_list.py # Component list management
+│   ├── code_editor.py    # Code editing functionality
+│   └── console.py        # Console output
+├── core/                 # Core functionality
+│   ├── component.py      # Component class and operations
+│   ├── react_export.py   # React export functionality
+│   ├── nextjs_export.py  # Next.js export functionality
+│   └── library_export.py # Component library export
+└── utils/                # Utilities
+    ├── file_utils.py     # File operations
+    └── npm_utils.py      # NPM interaction
+Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Fork the repository
+Create your feature branch (git checkout -b feature/amazing-feature)
+Commit your changes (git commit -m 'Add some amazing feature')
+Push to the branch (git push origin feature/amazing-feature)
+Open a Pull Request
 
-Project Link: https://github.com/JoshuaFourie/TSX-Viewer 
+License
+This project is licensed under the MIT License - see the LICENSE file for details.
