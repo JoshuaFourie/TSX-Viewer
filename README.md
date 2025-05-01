@@ -1,35 +1,33 @@
-TSX Component Manager
-A powerful desktop application for managing, editing, and exporting React TSX/JSX components. Create, modify, and export components as complete React applications, Next.js apps, or reusable component libraries.
-Features
-Component Management
+# TSX Component Renderer
 
-Multi-Component Projects - Add, edit, and organize multiple components
-Project Saving - Save and load your component projects for continued work
-Component Operations - Rename, duplicate, and remove components with ease
+## Overview
 
-Advanced Code Editing
+TSX Component Renderer is a powerful desktop application that helps developers preview, analyze, and export React TypeScript (TSX) components with ease. Built with Python and Tkinter, this tool provides a comprehensive environment for working with React components.
 
-Syntax Highlighting - Full React/TSX syntax highlighting
-Search & Replace - Powerful text search and replace functionality
-Auto-formatting - Format your code with a single click
-Auto-completion - Brackets and quote auto-closing
-Line Numbers - Visual line reference for easier editing
+## Features
 
-Powerful Export Options
+- 🔍 Render and preview TSX components
+- 📋 Code view with syntax highlighting
+- 🌐 Integrated webpack development server
+- 🚀 One-click export to a full React application
+- 🧩 Automatic dependency detection
+- 💻 Cross-platform support (Windows, macOS, Linux)
 
-React Application - Export as complete, ready-to-run React apps
-Next.js Application - Export to Next.js with App Router or Pages Router
-Component Library - Package components as reusable NPM libraries
-Storybook Integration - Optional Storybook setup for component documentation
+## Prerequisites
 
-Installation
-Prerequisites
+- Python 3.8+ with tkinter
+  - Windows/macOS: Usually pre-installed
+  - Linux: May need to install via package manager
+    - Ubuntu/Debian: `sudo apt-get install python3-tk`
+    - Fedora: `sudo dnf install python3-tkinter`
+    - Arch: `sudo pacman -S tk`
+- Node.js 16+ and npm
+  - Download from: https://nodejs.org/
 
-Python 3.8+ with tkinter
-Node.js 16+ and npm
+## Installation
 
-Setup
-bash# Clone the repository
+1. Clone the repository:
+```bash
 git clone https://github.com/JoshuaFourie/TSX-Viewer.git
 cd TSX-Viewer
 
@@ -110,5 +108,8 @@ Commit your changes (git commit -m 'Add some amazing feature')
 Push to the branch (git push origin feature/amazing-feature)
 Open a Pull Request
 
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+Project Link: https://github.com/JoshuaFourie/TSX-Viewer 
