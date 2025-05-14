@@ -5,8 +5,13 @@ TSX Component Manager - A tool for managing and exporting React TSX components
 import os
 import subprocess
 import sys
-import tkinter as tk
 import logging
+
+from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import Qt
+
+# Import the PyQt6 version of main window
 from ui.main_window import TSXComponentManager
 
 def setup_logging():
@@ -31,27 +36,25 @@ def setup_logging():
 def check_dependencies():
     """Check if required dependencies are installed"""
     try:
-        import tkinter.font as tkfont
-        import tkinter.scrolledtext as scrolledtext
-        import tkinter.ttk as ttk
-        import json
-        import subprocess
+        # Check PyQt6 dependencies
+        import PyQt6
+        
+        # Check for Pillow (optional)
+        try:
+            from PIL import Image
+            print("Pillow is installed")
+        except ImportError:
+            print("Warning: Pillow is not installed. Some UI features might not work properly.")
+            print("Install it using: pip install pillow")
+        
         return True
     except ImportError as e:
         print(f"Missing dependency: {e}")
+        print("Please install PyQt6 using: pip install PyQt6")
         return False
 
-def main():
-    """Main entry point for the application"""
-    logger = setup_logging()
-    logger.info("Starting TSX Component Manager")
-    
-    # Check dependencies
-    if not check_dependencies():
-        print("Please install required dependencies")
-        sys.exit(1)
-    
-    # Check for Node.js
+def check_node_dependencies():
+    """Check Node.js and npm dependencies"""
     try:
         is_windows = os.name == 'nt'
         node_cmd = "node --version" if is_windows else ["node", "--version"]
@@ -60,45 +63,65 @@ def main():
         node_version = subprocess.check_output(node_cmd, shell=is_windows).decode().strip()
         npm_version = subprocess.check_output(npm_cmd, shell=is_windows).decode().strip()
         
-        logger.info(f"Node.js version: {node_version}")
-        logger.info(f"npm version: {npm_version}")
+        return node_version, npm_version
     except Exception as e:
-        logger.error(f"Error detecting Node.js and npm: {str(e)}")
-        print("Error: Node.js and npm are required to run this application.")
-        print("Please install Node.js from https://nodejs.org/")
+        return None, None
+
+def main():
+    """Main entry point for the application"""
+    # Setup logging
+    logger = setup_logging()
+    logger.info("Starting TSX Component Manager")
+    
+    # Check PyQt6 dependencies
+    if not check_dependencies():
         sys.exit(1)
     
-    # Start the application
-    root = tk.Tk()
-    root.title("TSX Component Manager")
+    # Check Node.js dependencies
+    node_version, npm_version = check_node_dependencies()
     
-    # Set icon if available
+    # Create application
+    app = QApplication(sys.argv)
+    
+    # Create main window
+    window = TSXComponentManager()
+    
+    # Set window icon
     try:
-        if is_windows:
-            root.iconbitmap("resources/icon.ico")
-        else:
-            # For Linux/Mac
-            icon = tk.PhotoImage(file="resources/icon.png")
-            root.iconphoto(True, icon)
-    except Exception:
-        # Icon not found, continue without it
-        pass
+        icon_path = "resources/icon.png"
+        if os.path.exists(icon_path):
+            app_icon = QIcon(icon_path)
+            window.setWindowIcon(app_icon)
+    except Exception as e:
+        logger.warning(f"Could not set application icon: {e}")
     
-    app = TSXComponentManager(root)
+    # Check Node.js dependencies and show warning if not found
+    if not (node_version and npm_version):
+        QMessageBox.warning(
+            window, 
+            "Dependencies Missing", 
+            "Node.js and/or npm not found. Some export features will be disabled.\n\n"
+            "Please install Node.js from https://nodejs.org/",
+            QMessageBox.Ok
+        )
+    else:
+        logger.info(f"Node.js version: {node_version}")
+        logger.info(f"npm version: {npm_version}")
+    
+    # Show the window
+    window.show()
     
     # Center the window
-    window_width = 1200
-    window_height = 800
-    screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight()
-    x = (screen_width - window_width) // 2
-    y = (screen_height - window_height) // 2
-    root.geometry(f"{window_width}x{window_height}+{x}+{y}")
+    frame_geometry = window.frameGeometry()
+    screen_center = app.primaryScreen().availableGeometry().center()
+    frame_geometry.moveCenter(screen_center)
+    window.move(frame_geometry.topLeft())
     
-    # Start the main loop
-    root.mainloop()
+    # Start the event loop
+    exit_code = app.exec()
     
     logger.info("Application exited")
+    sys.exit(exit_code)
 
 if __name__ == "__main__":
     main()

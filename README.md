@@ -83,22 +83,23 @@ Ready for NPM publishing
 
 Development
 The application is structured into modules for better maintainability:
-tsx_component_manager/
-├── __init__.py
-├── main.py               # Main entry point
-├── ui/                   # User interface modules
-│   ├── main_window.py    # Main application window
-│   ├── component_list.py # Component list management
-│   ├── code_editor.py    # Code editing functionality
-│   └── console.py        # Console output
-├── core/                 # Core functionality
-│   ├── component.py      # Component class and operations
-│   ├── react_export.py   # React export functionality
-│   ├── nextjs_export.py  # Next.js export functionality
-│   └── library_export.py # Component library export
-└── utils/                # Utilities
-    ├── file_utils.py     # File operations
-    └── npm_utils.py      # NPM interaction
+
+__init__.py
+main.py               # Main entry point
+ui/                   # User interface modules
+├── main_window.py    # Main application window
+├── component_list.py # Component list management
+├── code_editor.py    # Code editing functionality
+└── console.py        # Console output
+core/                 # Core functionality
+├── component.py      # Component class and operations
+├── react_export.py   # React export functionality
+├── nextjs_export.py  # Next.js export functionality
+└── library_export.py # Component library export
+utils/                # Utilities
+├── file_utils.py     # File operations
+└── npm_utils.py      # NPM interaction
+
 Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
 

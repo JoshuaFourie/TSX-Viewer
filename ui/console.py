@@ -1,143 +1,145 @@
 """
-Console module for displaying application logs and messages
+Modern console module with collapsible panel
 """
-import tkinter as tk
-from tkinter import ttk, scrolledtext
+import sys
 import datetime
-from typing import Optional
-import queue
-import threading
-import logging
+from typing import Dict, Any
 
-logger = logging.getLogger(__name__)
+from PyQt6.QtWidgets import (
+    QWidget, QVBoxLayout, QHBoxLayout, QTextEdit, 
+    QLabel, QPushButton, QFrame, QApplication, QMainWindow
+)
+from PyQt6.QtGui import QTextCursor, QColor, QFont
+from PyQt6.QtCore import Qt
 
-class ConsoleFrame(ttk.LabelFrame):
-    """Frame containing the console output"""
+class ConsoleWidget(QWidget):
+    """Modern console widget with advanced logging capabilities"""
     
-    def __init__(self, parent, **kwargs):
-        """Initialize the console frame"""
-        super().__init__(parent, text="Console", **kwargs)
-        self.pack(fill=tk.X, expand=False, pady=(0, 10))
+    def __init__(self, parent=None):
+        super().__init__(parent)
         
-        # Message queue for thread safety
-        self.message_queue = queue.Queue()
+        # Configure message styles
+        self.message_styles: Dict[str, Dict[str, Any]] = {
+            "info": {"color": "#4B5563", "font_weight": QFont.Weight.Normal},
+            "success": {"color": "#10B981", "font_weight": QFont.Weight.Bold},
+            "warning": {"color": "#F59E0B", "font_weight": QFont.Weight.Bold},
+            "error": {"color": "#EF4444", "font_weight": QFont.Weight.Bold}
+        }
         
-        # Create the console widget
-        self.console_text = scrolledtext.ScrolledText(
-            self, 
-            wrap=tk.WORD, 
-            height=6, 
-            font=("Courier", 9),
-            background="#f5f5f5"
-        )
-        self.console_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
-        self.console_text.config(state=tk.DISABLED)
+        # Maximum number of log messages
+        self.max_messages = 1000
         
-        # Tag configurations
-        self.console_text.tag_configure('info', foreground='#0066cc')
-        self.console_text.tag_configure('success', foreground='#008800')
-        self.console_text.tag_configure('warning', foreground='#cc7700')
-        self.console_text.tag_configure('error', foreground='#cc0000')
-        self.console_text.tag_configure('timestamp', foreground='#666666')
+        # Create layout
+        layout = QVBoxLayout()
+        self.setLayout(layout)
         
-        # Create toolbar
-        self.create_toolbar()
+        # Header with controls
+        header = QFrame()
+        header_layout = QHBoxLayout()
+        header.setLayout(header_layout)
         
-        # Start message processing
-        self.process_messages()
-    
-    def create_toolbar(self):
-        """Create the toolbar with console controls"""
-        toolbar = ttk.Frame(self)
-        toolbar.pack(fill=tk.X, padx=5, pady=(0, 5))
+        # Title label
+        self.title_label = QLabel("Console")
+        header_layout.addWidget(self.title_label)
+        
+        # Message count
+        self.message_count_label = QLabel("0")
+        header_layout.addWidget(self.message_count_label)
         
         # Clear button
-        clear_button = ttk.Button(
-            toolbar, text="Clear Console", command=self.clear_console
-        )
-        clear_button.pack(side=tk.LEFT)
+        clear_btn = QPushButton("Clear")
+        clear_btn.clicked.connect(self.clear_messages)
+        header_layout.addWidget(clear_btn)
         
-        # Filter dropdown
-        ttk.Label(toolbar, text="Show:").pack(side=tk.LEFT, padx=(10, 0))
-        self.filter_var = tk.StringVar(value="All")
-        filter_combo = ttk.Combobox(
-            toolbar, 
-            textvariable=self.filter_var, 
-            values=["All", "Info", "Success", "Warning", "Error"],
-            width=10
-        )
-        filter_combo.pack(side=tk.LEFT, padx=5)
-        filter_combo.bind("<<ComboboxSelected>>", self.apply_filter)
+        layout.addWidget(header)
         
-        # Auto-scroll checkbox
-        self.autoscroll_var = tk.BooleanVar(value=True)
-        autoscroll_check = ttk.Checkbutton(
-            toolbar, 
-            text="Auto-scroll", 
-            variable=self.autoscroll_var
-        )
-        autoscroll_check.pack(side=tk.LEFT, padx=10)
+        # Console text area
+        self.console_text = QTextEdit()
+        self.console_text.setReadOnly(True)
+        layout.addWidget(self.console_text)
+        
+        # Initialize message list
+        self.messages = []
     
-    def add_message(self, message: str, level: str = 'info'):
+    def add_message(self, message: str, level: str = "info"):
         """
         Add a message to the console
         
         Args:
-            message: The message to add
+            message: The message text to add
             level: Message level (info, success, warning, error)
         """
-        # Put the message in the queue for thread-safe processing
+        # Default to info level if invalid
+        if level not in self.message_styles:
+            level = "info"
+        
+        # Create timestamp
         timestamp = datetime.datetime.now().strftime("%H:%M:%S")
-        self.message_queue.put((message, level, timestamp))
+        full_message = f"[{timestamp}] {message}"
+        
+        # Add to messages list
+        self.messages.append({
+            "message": full_message,
+            "level": level
+        })
+        
+        # Limit number of messages
+        if len(self.messages) > self.max_messages:
+            self.messages.pop(0)
+        
+        # Update message count
+        self.message_count_label.setText(str(len(self.messages)))
+        
+        # Update console text
+        self._update_console_text()
     
-    def process_messages(self):
-        """Process messages from the queue"""
-        try:
-            while not self.message_queue.empty():
-                message, level, timestamp = self.message_queue.get_nowait()
-                self._add_message_to_console(message, level, timestamp)
-        except Exception as e:
-            logger.error(f"Error processing console messages: {e}")
+    def _update_console_text(self):
+        """Update the console text widget with all messages"""
+        # Clear existing text
+        self.console_text.clear()
         
-        # Schedule to run again
-        self.after(100, self.process_messages)
-    
-    def _add_message_to_console(self, message: str, level: str, timestamp: str):
-        """Add a message directly to the console widget"""
-        self.console_text.config(state=tk.NORMAL)
-        
-        # Add timestamp
-        self.console_text.insert(tk.END, f"[{timestamp}] ", 'timestamp')
-        
-        # Add the message with appropriate tag
-        self.console_text.insert(tk.END, f"{message}\n", level)
-        
-        # Auto-scroll if enabled
-        if self.autoscroll_var.get():
-            self.console_text.see(tk.END)
+        # Add all messages with styling
+        for msg in self.messages:
+            style = self.message_styles.get(msg['level'], self.message_styles['info'])
             
-        self.console_text.config(state=tk.DISABLED)
+            # Set text color and format
+            color = QColor(style['color'])
+            cursor = self.console_text.textCursor()
+            format = cursor.charFormat()
+            format.setForeground(color)
+            format.setFontWeight(style['font_weight'])
+            
+            cursor.mergeCharFormat(format)
+            cursor.insertText(msg['message'] + "\n")
     
-    def clear_console(self):
-        """Clear the console"""
-        self.console_text.config(state=tk.NORMAL)
-        self.console_text.delete(1.0, tk.END)
-        self.console_text.config(state=tk.DISABLED)
-    
-    def apply_filter(self, event=None):
-        """Apply the selected filter to the console"""
-        filter_value = self.filter_var.get()
+    def clear_messages(self):
+        """Clear all console messages"""
+        self.messages.clear()
+        self.console_text.clear()
+        self.message_count_label.setText("0")
         
-        # Show all messages
-        if filter_value == "All":
-            self.console_text.tag_configure('info', elide=False)
-            self.console_text.tag_configure('success', elide=False)
-            self.console_text.tag_configure('warning', elide=False)
-            self.console_text.tag_configure('error', elide=False)
-            return
+        # Add a system message about clearing
+        self.add_message("Console cleared", "info")
+
+# Standalone application for testing
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Console Widget")
         
-        # Show only selected level
-        self.console_text.tag_configure('info', elide=filter_value != "Info")
-        self.console_text.tag_configure('success', elide=filter_value != "Success")
-        self.console_text.tag_configure('warning', elide=filter_value != "Warning")
-        self.console_text.tag_configure('error', elide=filter_value != "Error")
+        # Create central widget and console
+        central_widget = ConsoleWidget()
+        self.setCentralWidget(central_widget)
+        
+        # Add some test messages
+        central_widget.add_message("Application started", "info")
+        central_widget.add_message("Important operation successful", "success")
+        central_widget.add_message("Warning: Potential issue detected", "warning")
+        central_widget.add_message("Critical error occurred", "error")
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.resize(600, 400)
+    window.show()
+    sys.exit(app.exec())
